@@ -14,11 +14,11 @@ var cssObj = document.createElement("link");
 document.body.appendChild(cssObj);
 cssObj.setAttribute('src', hostUrl+'/assets/css/styles.css');
 
-if (jQuery(".toptal-product-slider").length > 0) {
+if (jQuery(".my-product-slider").length > 0) {
   var htmlContent = "";
   sliderData.forEach(item => {
     htmlContent += "<div><div class=\"img-wrap\"><img src=\""+item.imageSrc+"\" alt=\""+item.altText+"\" /></div><h3 class=\"title\">"+item.title+"</h3></div>";
   });
-  jQuery(".toptal-product-slider").html(htmlContent);
-  jQuery(".toptal-product-slider").slick();
+  jQuery(".my-product-slider").html(htmlContent);
+  jQuery(".my-product-slider").slick();
 }
