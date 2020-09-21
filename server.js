@@ -27,7 +27,8 @@ const handle = app.getRequestHandler();
 const {
   SHOPIFY_API_SECRET_KEY,
   SHOPIFY_API_KEY,
-  HOST  
+  HOST,
+  PROXY_SUB_PATH
 } = process.env;
 
 app.prepare().then(() => {
@@ -93,7 +94,7 @@ app.prepare().then(() => {
           body: JSON.stringify({
             "script_tag": {
               "event": "onload",
-              "src": `${HOST}/assets/js/product-slider.js`
+              "src": `https://${shop}/apps/${PROXY_SUB_PATH}/assets/js/product-slider.js`
             }
           })
         })
@@ -117,17 +118,24 @@ app.prepare().then(() => {
 
   router.get('/get-slider-products', verifyRequest(), async (ctx) => {
     const { shop, accessToken } = ctx.session;
-    ctx.body = await getSliderProducts(ctx, accessToken, shop);
+    ctx.body = await getSliderProducts(shop);
   });
 
   router.get('/assets/js/product-slider.js', async (ctx) => {
+    const pairs = ctx.request.querystring.split('&');
+    var result = {};
+    pairs.forEach(function(pair) {
+        pair = pair.split('=');
+        result[pair[0]] = decodeURIComponent(pair[1] || '');
+    });
+    const param = JSON.parse(JSON.stringify(result));
+   
     try {
       const data = await fs.readFileSync(path.join(__dirname, ctx.request.path), 'utf8');
       let jsData = "";
-      jsData += `var hostUrl = \"${HOST}\";`;
+      jsData += `var hostUrl = \"https://${param.shop}${param.path_prefix};\";`;
 
-      const { shop, accessToken } = ctx.session;
-      const sliderData = await getSliderProducts(ctx, accessToken, shop);
+      const sliderData = await getSliderProducts(param.shop);
       
       ctx.body = jsData + "var sliderData = " + JSON.stringify(sliderData) + ";" + data;
       ctx.res.statusCode = 200;

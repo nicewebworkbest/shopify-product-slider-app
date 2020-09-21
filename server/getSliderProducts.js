@@ -1,6 +1,6 @@
 const { getSliderProductsByShop, addSliderProduct } = require('./src/service/slider_products.service');
 
-const getSliderProducts = async (ctx, accessToken, shop) => {
+const getSliderProducts = async (shop) => {
     return await getSliderProductsByShop(shop);
 };
   
