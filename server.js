@@ -122,13 +122,7 @@ app.prepare().then(() => {
   });
 
   router.get('/assets/js/product-slider.js', async (ctx) => {
-    const pairs = ctx.request.querystring.split('&');
-    var result = {};
-    pairs.forEach(function(pair) {
-        pair = pair.split('=');
-        result[pair[0]] = decodeURIComponent(pair[1] || '');
-    });
-    const param = JSON.parse(JSON.stringify(result));
+    const param = ctx.request.query;
    
     try {
       const data = await fs.readFileSync(path.join(__dirname, ctx.request.path), 'utf8');
